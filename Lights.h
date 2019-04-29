@@ -1,6 +1,7 @@
 #ifndef Lights_h
 #define Lights_h
 
+#include "RGB.h"
 #include "Debounce.h"
 
 class Lights
@@ -14,9 +15,9 @@ class Lights
   private:
     int _state;
     int _button_state;
-    int _r, _g, _b, _bp, _relay;
+    RGB _rgb;
+    int _bp, _relay;
     Debounce _button;
-    void setColor(int r, int g, int b);
 };
 
 #endif

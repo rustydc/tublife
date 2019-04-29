@@ -13,7 +13,6 @@ const int LIGHTS_BUTTON_GREEN_PIN = 10;
 const int LIGHTS_BUTTON_BLUE_PIN = 11;
 const int LIGHTS_RELAY_PIN = 12;
 const int CIRC_PUMP_RELAY_PIN = 13;
-
 const int THERMOMETER_BUS_PIN = 14;
 
 Jets jets(

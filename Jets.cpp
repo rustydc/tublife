@@ -5,23 +5,22 @@
 #define WARN 4000
 
 Jets::Jets(int button, int r, int g, int b, int power, int speed):
-    _r(r), _g(g), _b(b), _power(power), _speed(speed),
+    _rgb(r, g, b),  _power(power), _speed(speed),
     _bp(button), _button(50, button), _state(0),
     _last(0), _button_state(LOW), _is_warn(false) {}
 
 void Jets::setup() {
-  pinMode(_r, OUTPUT);
-  pinMode(_g, OUTPUT);
-  pinMode(_b, OUTPUT);
+  _rgb.setup();
   pinMode(_bp, INPUT_PULLUP);
   pinMode(_power, OUTPUT);
   pinMode(_speed, OUTPUT);
-  setColor(0, 255, 255);
   digitalWrite(_power, LOW);
   digitalWrite(_speed, LOW);
+  _rgb.set(0, 255, 255);
 }
 
 void Jets::update() {
+  delay(1);
   _button.update();
   // Check for button.
   int prev = _button_state;
@@ -32,9 +31,11 @@ void Jets::update() {
     _last = millis();
     if (_is_warn) {
       _is_warn = false;
-      setColor(0, 255, 255);
+      _rgb.ease_to(0, 255, 255, 500);
+    } else {
+      _rgb.pulse(255, 255, 255, 500);
+      toggle();
     }
-    toggle();
   }
 
   if (_state != 0) {
@@ -42,13 +43,15 @@ void Jets::update() {
     int t = millis() - _last;
     if (t >= SHUTOFF) {
       _is_warn = false;
-      setColor(0, 255, 255);
+      _rgb.ease_to(0, 255, 255, 1000);
       setState(0);
-    } else if (t >= WARN) {
+    } else if (t >= WARN && !_is_warn) {
       _is_warn = true;
-      setColor(255, 0, 0);
+      _rgb.ease_to(255, 0, 0, 1000);
     }
   }
+
+  _rgb.update();
 }
 
 void Jets::toggle() {
@@ -61,7 +64,6 @@ void Jets::toggle() {
 
 void Jets::setState(int state) {
   _is_warn = false;
-  setColor(0, 255, 255);
   if (state == 0) {
     digitalWrite(_power, LOW);
     digitalWrite(_speed, LOW);
@@ -75,8 +77,3 @@ void Jets::setState(int state) {
   _state = state;
 }
 
-void Jets::setColor(int r, int g, int b) {
-  analogWrite(_r, r);
-  analogWrite(_g, g);
-  analogWrite(_b, b);
-}

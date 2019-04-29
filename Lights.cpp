@@ -2,17 +2,15 @@
 #include "Lights.h"
 
 Lights::Lights(int button, int r, int g, int b, int relay):
-    _r(r), _g(g), _b(b), _relay(relay),
+    _rgb(r, g, b), _relay(relay),
     _bp(button), _button(50, button),
     _button_state(LOW) {}
 
 void Lights::setup() {
-  pinMode(_r, OUTPUT);
-  pinMode(_g, OUTPUT);
-  pinMode(_b, OUTPUT);
+  _rgb.setup();
+  _rgb.set(0, 255, 255);
   pinMode(_relay, OUTPUT);
   pinMode(_bp, INPUT_PULLUP);
-  setColor(0, 255, 255);
 }
 
 void Lights::update() {
@@ -22,6 +20,7 @@ void Lights::update() {
   _button_state = _button.read();
   if (prev == HIGH && _button_state == LOW) {
     // Button press.
+    _rgb.pulse(255, 255, 255, 500);
     toggle();
   }
 }
@@ -38,10 +37,4 @@ void Lights::toggle() {
 
 void Lights::setState(int state) {
   _state = state;
-}
-
-void Lights::setColor(int r, int g, int b) {
-  analogWrite(_r, r);
-  analogWrite(_g, g);
-  analogWrite(_b, b);
 }

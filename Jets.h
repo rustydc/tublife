@@ -1,6 +1,7 @@
 #ifndef Jets_h
 #define Jets_h
 
+#include "RGB.h"
 #include "Debounce.h"
 
 class Jets
@@ -16,9 +17,9 @@ class Jets
     int _last;
     int _button_state;
     int _is_warn;
-    int _r, _g, _b, _power, _speed, _bp;
+    RGB _rgb;
+    int _power, _speed, _bp;
     Debounce _button;
-    void setColor(int r, int g, int b);
 };
 
 #endif
